@@ -48,21 +48,18 @@ def browse_files():
 
 def merge_files():
     selected_files = right_listbox.get(0, tk.END)
-    print(selected_files)
     selected_file_paths = []
     for file_name in selected_files:
         for file_path in file_paths:
             if os.path.basename(file_path) == file_name:
                 selected_file_paths.append(file_path)
                 break
-    print(selected_file_paths)
     if selected_file_paths:
         output_path = os.path.join(os.getcwd(), output_file_name)
         if os.path.exists(output_path):
             confirm_overwrite = messagebox.askyesno("File Exists", "The merged.pptx file already exists. Do you want to overwrite it?")
             if not confirm_overwrite:
                 return
-        print(selected_file_paths)
         presentation_merge.merge_presentations(selected_file_paths, output_path)
         messagebox.showinfo("Merge Complete", "Presentations merged successfully!")
     else:
