@@ -87,17 +87,21 @@ frame.pack(padx=10, pady=10)
 left_listbox = DragDropListbox(frame)
 left_listbox.pack(side=tk.LEFT, padx=5)
 
+# Buttons frame
+button_frame = tk.Frame(frame)
+button_frame.pack(side=tk.LEFT, padx=5)
+
 # Button to move items to the right
-move_right_button = tk.Button(frame, text=">", command=lambda: move_items(left_listbox, right_listbox))
-move_right_button.pack(side=tk.LEFT)
+move_right_button = tk.Button(button_frame, text=">>", command=lambda: move_items(left_listbox, right_listbox))
+move_right_button.pack(side=tk.TOP, pady=5)
+
+# Button to move items to the left
+move_left_button = tk.Button(button_frame, text="<<", command=lambda: move_items(right_listbox, left_listbox))
+move_left_button.pack(side=tk.TOP, pady=5)
 
 # Right listbox
 right_listbox = DragDropListbox(frame)
 right_listbox.pack(side=tk.LEFT, padx=5)
-
-# Button to move items to the left
-move_left_button = tk.Button(frame, text="<", command=lambda: move_items(right_listbox, left_listbox))
-move_left_button.pack(side=tk.LEFT)
 
 # Button to merge files
 merge_button = tk.Button(root, text="Merge Files", command=merge_files)
