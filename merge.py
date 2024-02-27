@@ -4,9 +4,9 @@ from tkinter import messagebox
 import win32com.client
 import os
 
-file_paths = []
 input_folder_path = "C:\\Users\\Pasca\\Desktop\\Cross To Harmony\\PPP"
 output_file_name = "merged.pptx"
+file_paths = [os.path.join(input_folder_path, f) for f in os.listdir(input_folder_path) if os.path.isfile(os.path.join(input_folder_path, f)) and f.endswith('.pptx')]
 
 def merge_presentations(selected_files, output_path):
     ppt_instance = win32com.client.Dispatch('PowerPoint.Application')
@@ -25,14 +25,12 @@ def merge_presentations(selected_files, output_path):
 
 def browse_files():
     global file_paths
-    file_paths = [os.path.join(input_folder_path, f) for f in os.listdir(input_folder_path) if os.path.isfile(os.path.join(input_folder_path, f)) and f.endswith('.pptx')]
     for path in file_paths:
         var = tk.BooleanVar()
         checkboxes.append(var)
         filename = os.path.basename(path)
         cb = ttk.Checkbutton(frame, text=filename, variable=var)
         cb.pack(anchor=tk.W)
-        added_paths.append(path) 
 
 def search_files():
     search_text = search_entry.get().strip()
@@ -51,6 +49,8 @@ def search_files():
 
 def reset_files():
     search_entry.delete(0, tk.END)  # Löschen Sie den gesamten Text aus dem Suchfeld
+    for cb in frame.winfo_children():
+        cb.destroy()  # Clear all checkboxes
     browse_files()  # Reload all files
 
 def merge_files():
