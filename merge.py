@@ -1,8 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
 from tkinter import messagebox
-import win32com.client
 import os
+import presentation_merge
 
 class DragDropListbox(tk.Listbox):
     def __init__(self, master, **kw):
@@ -33,20 +32,6 @@ input_folder_path = "C:\\Users\\Pasca\\Desktop\\Cross To Harmony\\PPP"
 output_file_name = "merged.pptx"
 file_paths = [os.path.join(input_folder_path, f) for f in os.listdir(input_folder_path) if os.path.isfile(os.path.join(input_folder_path, f)) and f.endswith('.pptx')]
 
-def merge_presentations(selected_files, output_path):
-    ppt_instance = win32com.client.Dispatch('PowerPoint.Application')
-    output_presentation = ppt_instance.Presentations.Add()
-
-    for path in selected_files:
-        presentation = ppt_instance.Presentations.Open(os.path.abspath(path), True, False, False)
-        presentation.Slides.Range(range(1, presentation.Slides.Count + 1)).Copy()
-        output_presentation.Application.Windows(1).Activate()
-        output_presentation.Application.CommandBars.ExecuteMso("PasteSourceFormatting")
-        presentation.Close()
-    output_presentation.SaveAs(os.path.abspath(output_path))
-    output_presentation.Close()
-    ppt_instance.Quit()
-
 def move_items(source_listbox, target_listbox):
     selected_indices = source_listbox.curselection()
     for index in selected_indices:
@@ -63,14 +48,22 @@ def browse_files():
 
 def merge_files():
     selected_files = right_listbox.get(0, tk.END)
-    selected_file_paths = [file_paths[right_listbox.get(0, tk.END).index(item)] for item in selected_files]
+    print(selected_files)
+    selected_file_paths = []
+    for file_name in selected_files:
+        for file_path in file_paths:
+            if os.path.basename(file_path) == file_name:
+                selected_file_paths.append(file_path)
+                break
+    print(selected_file_paths)
     if selected_file_paths:
         output_path = os.path.join(os.getcwd(), output_file_name)
         if os.path.exists(output_path):
             confirm_overwrite = messagebox.askyesno("File Exists", "The merged.pptx file already exists. Do you want to overwrite it?")
             if not confirm_overwrite:
                 return
-        merge_presentations(selected_file_paths, output_path)
+        print(selected_file_paths)
+        presentation_merge.merge_presentations(selected_file_paths, output_path)
         messagebox.showinfo("Merge Complete", "Presentations merged successfully!")
     else:
         messagebox.showwarning("No Files Selected", "Please select at least one file to merge.")
@@ -78,14 +71,15 @@ def merge_files():
 # Create main window
 root = tk.Tk()
 root.title("Merge PowerPoint Presentations")
+root.geometry("800x500")  # Set window size
 
 # Frame to hold listboxes and buttons
 frame = tk.Frame(root)
-frame.pack(padx=10, pady=10)
+frame.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
 
 # Left listbox
 left_listbox = DragDropListbox(frame)
-left_listbox.pack(side=tk.LEFT, padx=5)
+left_listbox.pack(side=tk.LEFT, padx=5, expand=True, fill=tk.BOTH)
 
 # Buttons frame
 button_frame = tk.Frame(frame)
@@ -101,7 +95,7 @@ move_left_button.pack(side=tk.TOP, pady=5)
 
 # Right listbox
 right_listbox = DragDropListbox(frame)
-right_listbox.pack(side=tk.LEFT, padx=5)
+right_listbox.pack(side=tk.LEFT, padx=5, expand=True, fill=tk.BOTH)
 
 # Button to merge files
 merge_button = tk.Button(root, text="Merge Files", command=merge_files)
