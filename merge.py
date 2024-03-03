@@ -2,31 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import os
 import presentation_merge
-
-class DragDropListbox(tk.Listbox):
-    def __init__(self, master, **kw):
-        kw['selectmode'] = tk.SINGLE
-        kw['activestyle'] = 'none'
-        tk.Listbox.__init__(self, master, kw)
-        self.bind('<Button-1>', self.setCurrent)
-        self.bind('<B1-Motion>', self.shiftSelection)
-        self.curIndex = None
-
-    def setCurrent(self, event):
-        self.curIndex = self.nearest(event.y)
-
-    def shiftSelection(self, event):
-        i = self.nearest(event.y)
-        if i < self.curIndex:
-            x = self.get(i)
-            self.delete(i)
-            self.insert(i+1, x)
-            self.curIndex = i
-        elif i > self.curIndex:
-            x = self.get(i)
-            self.delete(i)
-            self.insert(i-1, x)
-            self.curIndex = i
+from dragdrop_listbox import DragDropListbox
 
 input_folder_path = "C:\\Users\\Pasca\\Desktop\\Cross To Harmony\\PPP"
 output_file_name = "merged.pptx"
