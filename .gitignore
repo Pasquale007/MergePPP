@@ -4,3 +4,6 @@ __pycache__/
 
 # PowerPoint
 merged.pptx
+
+# config
+config_prod.py

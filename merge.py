@@ -3,9 +3,8 @@ from tkinter import messagebox
 import os
 import presentation_merge
 from dragdrop_listbox import DragDropListbox
+from config_prod import input_folder_path, output_file_name
 
-input_folder_path = "C:\\Users\\Pasca\\Desktop\\Cross To Harmony\\PPP"
-output_file_name = "merged.pptx"
 file_paths = [os.path.join(input_folder_path, f) for f in os.listdir(input_folder_path) if os.path.isfile(os.path.join(input_folder_path, f)) and f.endswith('.pptx')]
 
 def move_items(source_listbox, target_listbox):
